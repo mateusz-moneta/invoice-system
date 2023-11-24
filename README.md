@@ -28,3 +28,13 @@ Platforma umożliwia ogólny dostęp do danych, które wcześniej trzeba było w
 * Next.js
   
 * Docker
+
+## Opis
+Przygotowanie środowiska lokalnego do części Backend
+
+* Zainstaluj pgAdmin. Tu znajdziesz dla Windows -> https://www.pgadmin.org/download/pgadmin-4-windows/
+* Utwórz Server, ustal hasło, swórz baze dnaych invoice-system-db i zmodyfikuj ConnectionString w appsettings.json.
+* Mając otwartą solucję w VisualStudio w PackageManagerConsole wykonaj komendę "update-database". To sprawi, że EntityFramework utworzy tabele w bazie na podstawie utworzonych Models.
+
+
+

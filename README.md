@@ -35,5 +35,7 @@ Platforma umożliwia ogólny dostęp do danych, które wcześniej trzeba było w
 * Utwórz Server, ustal hasło, swórz baze dnaych invoice-system-db i zmodyfikuj ConnectionString w appsettings.json.
 * Mając otwartą solucję w VisualStudio w PackageManagerConsole wykonaj komendę "update-database". To sprawi, że EntityFramework utworzy tabele w bazie na podstawie zdefiniowanych Models.
 
+## Diagram ERD
 
+![ERD-invoice-system](https://github.com/mateusz-moneta/invoice-system/assets/95887356/5f763108-8f95-4b53-9ec2-f643b65f49ba)
 

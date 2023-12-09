@@ -10,11 +10,11 @@ namespace InvoiceSystemAPI.Controllers
 {
     [ApiController]
     [Route("/api/auth")]
-    public class AurhController : Controller
+    public class AuthController : Controller
     {
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
-        public AurhController(IAuthService authService, IUserService userService)
+        public AuthController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
             _userService = userService;

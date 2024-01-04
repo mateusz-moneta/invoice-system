@@ -1,0 +1,14 @@
+@import '../colors.scss';
+
+form {
+    padding-bottom: 1.6rem;
+    padding-top: 2.9rem;
+
+    button, label {
+        @media (min-width: 768px) {
+            max-width: 49.6rem;
+        }
+        
+        width: 100%;
+    }
+}

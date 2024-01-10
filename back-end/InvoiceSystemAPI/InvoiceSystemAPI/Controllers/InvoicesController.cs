@@ -22,50 +22,111 @@ namespace InvoiceSystemAPI.Controllers
         [HttpGet]
         public IActionResult GetAllInvoices()
         {
-            return Ok(this._invoices);
+            try
+            {
+                var invoices = _invoiceService.GetAllInvoicesAsync().Result;
+
+                if(invoices != null)
+                {
+                    return Ok(invoices);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetInvoiceById(int id)
         {
-            var invoice = _invoices.Find(x => x.Id == id);
-            if (invoice == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(invoice);
+            try
+            {
+                var invoice = _invoiceService.GetInvoiceByIdAsync(id).Result;
+
+                if(invoice != null)
+                {
+                    return Ok(invoice);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch(Exception ex) 
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]
         public ActionResult<Invoice> CreateInvoice(Invoice invoice)
         {
-            return NoContent();
+            try
+            {
+                _invoiceService.CreateInvoice(invoice);
+                return CreatedAtAction(nameof(GetInvoiceById), new { id = invoice.Id }, invoice);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public ActionResult UpdateInvoice(int id, Invoice updatedInvoice)
         {
-            var index = _invoices.FindIndex(i => i.Id == id);
-            if (index == -1)
+            try
             {
-                return NotFound();
-            }
+                var existingInvoice = _invoiceService.GetInvoiceByIdAsync(id).Result;
+                if(existingInvoice == null) 
+                {
+                    return NotFound();
+                }
 
-            return NoContent();
+                updatedInvoice.Id = id;
+
+                bool isSuccess = _invoiceService.UpdateInvoiceAsync(updatedInvoice).Result;
+
+                if (isSuccess)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteInvoice(int id)
         {
-            var index = _invoices.FindIndex(i=>i.Id == id);
-            if(index == -1)
+            try
             {
-                return NotFound();
-            }
+                var existingInvoice = _invoiceService.GetInvoiceByIdAsync(id).Result;
 
-            _invoices.RemoveAt(index);
-            return NoContent();
+                if(existingInvoice == null)
+                {
+                    return NotFound();
+                }
+
+                _invoiceService.DeleteInvoiceAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
     }

@@ -1,14 +1,14 @@
 'use client';
 import {InvoiceType} from "@/lib/invoice/InvoiceType";
-import {dateFormatter, priceFormatter} from "@/lib/invoice/formatter";
+import {dateFormatter, priceFormatter} from "../../../../lib/formatter";
 
-export type InvoiceRowType = InvoiceType & {classNameTr: string, classNameTd: string}
+export type InvoiceRowType = InvoiceType & {classNameTr: string, classNameTd: string, onClick?: Function}
 export default function InvoicesListRow(props: InvoiceRowType) {
     const vatAmount: number = props.vatAmount ?? props.netPrice * (props.vatRate / 100);
     const grossPrice: number = props.grossPrice ?? props.netPrice + vatAmount;
 
     return (
-        <tr className={props.classNameTr}>
+        <tr className={props.classNameTr} onClick={() => props.onClick?.()}>
             <td className={props.classNameTd}>{props.id}</td>
             <td className={props.classNameTd}>{props.client}</td>
             <td className={props.classNameTd}>{dateFormatter(props.date)}</td>

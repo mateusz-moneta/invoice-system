@@ -1,12 +1,14 @@
 'use client';
 
 import React, {useState} from "react";
+import DataTableButton from "./DataTableButton";
 
 type Props = {
     rows: { [key: string]: any }[],
     columns: string[],
     rowComponent: Function,
     rowsPerPage?: number,
+    pageName: string,
 };
 
 const makeRows = (rows: { [key: string]: any }[], rowComponent: Function): React.JSX.Element[] => {
@@ -15,7 +17,10 @@ const makeRows = (rows: { [key: string]: any }[], rowComponent: Function): React
             ...row,
             key: index,
             classNameTd: `border-b border-slate-700 p-4 text-slate-${index % 2 === 0 ? '800' : '400'}`,
-            classNameTr: index % 2 === 0 ? 'bg-slate-600' : ''
+            classNameTr: index % 2 === 0 ? 'bg-slate-600' : '',
+            onClick: () => {
+                alert(1)
+            }
         };
 
         return rowComponent(props)
@@ -48,11 +53,14 @@ export default function DataTable(props: Props) {
     return (
         <div className="relative rounded-xl overflow-auto">
             <div className="shadow-sm overflow-auto my-8">
-                <table className={'border-collapse table-auto w-full overflow-scroll'}>
-                    <caption className={'caption-bottom'}>
-                        Page: {page} of {numberOfPages}
-                        <button className={'p-2 bg-slate-600'} onClick={() => { pagination('minus') }}>-</button>
-                        <button className={'p-2 bg-slate-600'} onClick={() => { pagination('plus') }}>+</button>
+                <table className={'border-collapse table-auto w-full overflow-scroll'} id={props.pageName}>
+                    <caption className={'caption-bottom mt-3'}>
+                        <span>Page: {page} of {numberOfPages}</span>
+                        <div className="inline-flex rounded-md shadow-sm ml-5" role="group">
+                            <DataTableButton onClick={() => { pagination('minus') }} first={true} disabled={1 === numberOfPages}>-</DataTableButton>
+                            <DataTableButton onClick={() => { pagination('plus') }} middle={true} disabled={1 === numberOfPages}>+</DataTableButton>
+                            <DataTableButton link={`${props.pageName}/new`} last={true}>Add new</DataTableButton>
+                        </div>
                     </caption>
                     <thead>
                         <tr>

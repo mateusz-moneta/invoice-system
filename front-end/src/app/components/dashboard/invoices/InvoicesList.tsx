@@ -21,6 +21,7 @@ export default function InvoicesList() {
                    ]}
                    rowComponent={(props: InvoiceRowType & {key: number}) => <InvoicesListRow {...props} key={props.key} />}
                    rowsPerPage={5}
+                   pageName={'invoices'}
         />
     )
 }

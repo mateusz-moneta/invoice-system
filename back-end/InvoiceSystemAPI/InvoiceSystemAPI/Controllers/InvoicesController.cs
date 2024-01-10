@@ -1,4 +1,5 @@
 ﻿using InvoiceSystemAPI.Models;
+using InvoiceSystemAPI.Services.Abstracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,13 @@ namespace InvoiceSystemAPI.Controllers
 
     public class InvoicesController : Controller
     {
+        private readonly IInvoiceService _invoiceService;
         private readonly List<Invoice> _invoices = new List<Invoice>();
+
+        public InvoicesController(IInvoiceService invoiceService)
+        {
+            _invoiceService = invoiceService;
+        }
 
         [HttpGet]
         public IActionResult GetAllInvoices()

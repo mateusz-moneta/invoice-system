@@ -69,7 +69,7 @@ namespace InvoiceSystemAPI.Controllers
         {
             try
             {
-                _invoiceService.CreateInvoice(invoice);
+                _invoiceService.CreateInvoiceAsync(invoice);
                 return CreatedAtAction(nameof(GetInvoiceById), new { id = invoice.Id }, invoice);
             }
             catch (Exception ex) 

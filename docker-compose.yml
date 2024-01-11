@@ -1,0 +1,21 @@
+version: '3.10'
+
+services:
+  api:
+    container_name: api
+    build:
+      context: ./back-end/InvoiceSystemAPI/InvoiceSystemAPI
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+
+  front:
+    container_name: front
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front-end:/app
+      - /app/node_modules

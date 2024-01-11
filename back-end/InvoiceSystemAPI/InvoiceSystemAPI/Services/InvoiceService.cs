@@ -13,7 +13,7 @@ namespace InvoiceSystemAPI.Services
         {
             _applicationDbContext = applicationDbContext;
         }
-        public async Task CreateInvoice(Invoice invoice)
+        public async Task CreateInvoiceAsync(Invoice invoice)
         {
             using(IDbContextTransaction transaction = _applicationDbContext.Database.BeginTransaction()) 
             { 
@@ -47,19 +47,34 @@ namespace InvoiceSystemAPI.Services
 
             if (existingInvoice != null)
             {
-                existingInvoice.Invoice_Date = updatedInvoice.Invoice_Date;
-                existingInvoice.Transaction_Date = updatedInvoice.Transaction_Date;
-                existingInvoice.Payment_Date = updatedInvoice.Payment_Date;
-                existingInvoice.Note = updatedInvoice.Note;
-                existingInvoice.Issuer_Id = updatedInvoice.Issuer_Id;
-                existingInvoice.Issuer_Name = updatedInvoice.Issuer_Name;
-                existingInvoice.Issuer_Address = updatedInvoice.Issuer_Address;
-                existingInvoice.Issuer_City = updatedInvoice.Issuer_City;
-                existingInvoice.Issuer_Zip = updatedInvoice.Issuer_Zip;
-                existingInvoice.Is_Paid = updatedInvoice.Is_Paid;
-                existingInvoice.Status_Id = updatedInvoice.Status_Id;
 
-                await _applicationDbContext.SaveChangesAsync();
+                using (IDbContextTransaction transaction = _applicationDbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        existingInvoice.Invoice_Date = updatedInvoice.Invoice_Date;
+                        existingInvoice.Transaction_Date = updatedInvoice.Transaction_Date;
+                        existingInvoice.Payment_Date = updatedInvoice.Payment_Date;
+                        existingInvoice.Note = updatedInvoice.Note;
+                        existingInvoice.Issuer_Id = updatedInvoice.Issuer_Id;
+                        existingInvoice.Issuer_Name = updatedInvoice.Issuer_Name;
+                        existingInvoice.Issuer_Address = updatedInvoice.Issuer_Address;
+                        existingInvoice.Issuer_City = updatedInvoice.Issuer_City;
+                        existingInvoice.Issuer_Zip = updatedInvoice.Issuer_Zip;
+                        existingInvoice.Is_Paid = updatedInvoice.Is_Paid;
+                        existingInvoice.Status_Id = updatedInvoice.Status_Id;
+
+                        _applicationDbContext.Invoices.Update(existingInvoice);
+                        await _applicationDbContext.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        throw new Exception("Invoice update error");
+                    }
+            }
+
                 return true;
             }
 
@@ -68,12 +83,24 @@ namespace InvoiceSystemAPI.Services
 
         public async Task DeleteInvoiceAsync(int id)
         {
-            var invoiceToDelete = await _applicationDbContext.Invoices.FirstOrDefault(x => x.Id == id);
+            var invoiceToDelete = await _applicationDbContext.Invoices.FirstOrDefaultAsync(x => x.Id == id);
 
             if (invoiceToDelete != null) 
             {
-                _applicationDbContext.Invoices.Remove(invoiceToDelete);
-                await _applicationDbContext.SaveChangesAsync();
+                using (IDbContextTransaction transaction = _applicationDbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                     _applicationDbContext.Invoices.Remove(invoiceToDelete);
+                    await _applicationDbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        throw new Exception("Invoice deletion error");
+                    }
+                }
             }
         }
     }

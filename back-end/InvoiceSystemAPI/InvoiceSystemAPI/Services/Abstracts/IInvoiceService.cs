@@ -5,7 +5,7 @@ namespace InvoiceSystemAPI.Services.Abstracts
 {
     public interface IInvoiceService
     {
-        Task CreateInvoice(Invoice invoice);
+        Task CreateInvoiceAsync(Invoice invoice);
         Task<List<Invoice>> GetAllInvoicesAsync();
         Task<Invoice> GetInvoiceByIdAsync(int id);
         Task<bool> UpdateInvoiceAsync(Invoice updatedInvoice);

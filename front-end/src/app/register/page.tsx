@@ -5,7 +5,6 @@ import { Button } from '../components/shared/button';
 import { LabeledInput } from '../components/shared/labeled-input';
 
 import './page.scss';
-import { navigate } from '@/app/utils/navigate';
 
 const initialInputsState = {
   name: {
@@ -43,8 +42,6 @@ export default function Page() {
       value,
       validity: { valid }
     } = event.target;
-
-    console.log(inputs);
 
     setInputs((values) => ({
       ...values,

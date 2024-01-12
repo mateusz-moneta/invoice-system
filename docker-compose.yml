@@ -7,7 +7,8 @@ services:
       context: ./back-end/InvoiceSystemAPI/InvoiceSystemAPI
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "7110:7110"
+      - "5177:80"
 
   front:
     container_name: front

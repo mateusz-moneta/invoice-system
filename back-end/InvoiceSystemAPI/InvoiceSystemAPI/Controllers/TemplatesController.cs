@@ -67,7 +67,7 @@ namespace InvoiceSystemAPI.Controllers
         {
             try
             {
-                _templateService.CreateTemplate(template);
+                _templateService.CreateTemplateAsync(template);
                 return CreatedAtAction(nameof(GetTemplateById), new { id = template.Id }, template);
             }
             catch (Exception ex)

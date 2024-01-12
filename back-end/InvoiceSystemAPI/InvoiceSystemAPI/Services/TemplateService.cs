@@ -16,38 +16,81 @@ public class TemplateService : ITemplateService
 
     public async Task<Template> GetTemplateByIdAsync(int id)
     {
-        return await _context.Templates.FindAsync(id);    }
+        return await _context.Templates.FindAsync(id);
+    }
 
     public async Task<List<Template>> GetAllTemplatesAsync()
     {
         return await _context.Templates.ToListAsync();
     }
 
-    public async Task CreateTemplate(Template template)
+    public async Task CreateTemplateAsync(Template template)
     {
-        await _context.Templates.AddAsync(template);
-        await _context.SaveChangesAsync();
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                await _context.Templates.AddAsync(template);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 
     public async Task<bool> UpdateTemplateAsync(Template updatedTemplate)
     {
-        var existingTemplate = await _context.Templates.FindAsync(updatedTemplate.Id);
-        if (existingTemplate != null)
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            _context.Entry(existingTemplate).CurrentValues.SetValues(updatedTemplate);
-            await _context.SaveChangesAsync();
-            return true;
+            try
+            {
+                var existingTemplate = await _context.Templates.FirstOrDefaultAsync(x => x.Id == updatedTemplate.Id);
+                if (existingTemplate != null)
+                {
+                    _context.Entry(existingTemplate).CurrentValues.SetValues(updatedTemplate);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+
+                await transaction.RollbackAsync();
+                return false;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-        return false;
     }
 
     public async Task DeleteTemplateAsync(int id)
     {
-        var template = await _context.Templates.FindAsync(id);
-        if (template != null)
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            _context.Templates.Remove(template);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var template = await _context.Templates.FirstOrDefaultAsync(x => x.Id == id);
+                if (template != null)
+                {
+                    _context.Templates.Remove(template);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

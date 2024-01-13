@@ -51,7 +51,9 @@ namespace InvoiceSystemAPI.Controllers
             string token = await _authService.GenerateTokenAsync(user, loginRequest.Password);
             return new LoginDTO
             {
-                Token = token
+                Token = token,
+                Id = user.Id,
+                Username = user.UserName
             };
 
         }

@@ -1,14 +1,16 @@
 'use client';
 import { ChangeEvent, useState } from 'react';
+
+
 import { redirect } from 'next/navigation';
 
 import { Button } from '../components/shared/button';
 import { LabeledInput } from '../components/shared/labeled-input';
 
-import { useAuthContext } from '../user-provider';
+import { navigate } from '../utils/navigate';
+import { useAuthContext } from '../auth-provider';
 
 import './page.scss';
-import { navigate } from '@/app/utils/navigate';
 
 const initialInputsState = {
   username: {

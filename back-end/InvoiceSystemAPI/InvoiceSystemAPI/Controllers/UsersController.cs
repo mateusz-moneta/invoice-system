@@ -10,10 +10,12 @@ namespace InvoiceSystemAPI.Controllers
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
+
         public UsersController(IUserService userService)
         {
             _userService = userService;
         }
+
         /// <summary>
         /// Creates a new user.
         /// </summary>
@@ -26,8 +28,8 @@ namespace InvoiceSystemAPI.Controllers
             await _userService.CreateUserAsync(createUserRequest);
             return Ok();
         }
-        
-        
+
+
         [HttpPost("{userId}/image")]
         public async Task<IActionResult> UploadUserImage(int userId, IFormFile imageFile)
         {
@@ -54,12 +56,13 @@ namespace InvoiceSystemAPI.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
 
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterUser([FromBody] RegisterUserRequest registerUserRequest)
-        {
-            await _userService.RegisterUserAsync(registerUserRequest);
-            return Ok();
+            public async Task<ActionResult> RegisterUser([FromBody] RegisterUserRequest registerUserRequest)
+            {
+                await _userService.RegisterUserAsync(registerUserRequest);
+                return Ok();
+            }
         }
     }
-}

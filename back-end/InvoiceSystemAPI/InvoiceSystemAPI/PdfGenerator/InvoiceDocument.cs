@@ -83,6 +83,8 @@ namespace InvoiceSystemAPI.PdfGenerator
 
                 if (!string.IsNullOrWhiteSpace(Model.Comments))
                     column.Item().PaddingTop(25).Element(ComposeComments);
+
+                column.Item().Element(ComposeSignatureAndStatus);
             });
         }
 
@@ -93,10 +95,29 @@ namespace InvoiceSystemAPI.PdfGenerator
                 column.Spacing(5);
                 column.Item().Text("Comments").FontSize(14);
                 column.Item().Text(Model.Comments);
+                column.Spacing(10);
             });
         }
 
-
+        void ComposeSignatureAndStatus(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(column =>
+                {
+                    if (Model.IsPaid)
+                    {
+                        column.Item().Text("Invoice is paid");
+                    }
+                    else
+                    {
+                        column.Item().Text("Invoice is NOT paid");
+                    }
+                });
+                row.ConstantItem(150).BorderBottom(1).PaddingBottom(5).Text("Signature");
+            });
+        }
+            
         void ComposeTable(IContainer container)
         {
             container.Table(table =>

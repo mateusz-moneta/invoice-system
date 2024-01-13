@@ -32,7 +32,8 @@ namespace InvoiceSystemAPI.PdfGenerator
                 },
 
                 Products = invoice.Products.ToList(),
-                Comments = invoice.Note
+                Comments = invoice.Note,
+                IsPaid = invoice.Is_Paid
             };
         }
     }

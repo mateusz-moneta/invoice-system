@@ -14,5 +14,6 @@ namespace InvoiceSystemAPI.PdfGenerator.Models
 
         public List<Product> Products { get; set; } = new List<Product>();
         public string Comments { get; set; }
+        public bool IsPaid { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using InvoiceSystemAPI.Models;
 using InvoiceSystemAPI.PdfGenerator;
+using InvoiceSystemAPI.Requests;
 using InvoiceSystemAPI.Services.Abstracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,17 @@ namespace InvoiceSystemAPI.Controllers
     {
 
         private readonly IInvoiceService _invoiceService;
+        private readonly IUserService _userService;
         private readonly string _pdfPath = "./MediaFiles/Invoices/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvoicesController"/> class.
         /// </summary>
         /// <param name="invoiceService">The invoice service.</param>
-        public InvoicesController(IInvoiceService invoiceService)
+        public InvoicesController(IInvoiceService invoiceService, IUserService userService)
         {
             _invoiceService = invoiceService;
+            _userService = userService;
         }
         /// <summary>
         /// Get all Invoices.
@@ -62,11 +65,11 @@ namespace InvoiceSystemAPI.Controllers
         /// </summary>
         /// <param name="invoiceId">The unique identifier of the invoice.</param>
         /// <returns>The requested invoice in PDF format.</returns>
-        [HttpGet("pdf/{invoiceId}")]
-        public IActionResult GetInvoicePdf(int invoiceId) 
+        [HttpGet("pdf")]
+        public IActionResult GetInvoicePdf([FromBody] PDFRequest pdfRequest) 
         {
-            var invoice = _invoiceService.GetInvoiceByIdAsync(invoiceId).Result;
-            string filePath = GeneratePDF(invoice);
+            var invoice = _invoiceService.GetInvoiceByIdAsync(pdfRequest.InvoiceID).Result;
+            string filePath = GeneratePDF(invoice, pdfRequest.UserId);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -199,10 +202,11 @@ namespace InvoiceSystemAPI.Controllers
             }
         }
 
-        private string GeneratePDF(Invoice invoice)
+        private string GeneratePDF(Invoice invoice, int userId)
         {
-            //invoice.Products = _productsService.GetProductsByInvoiceIdAsync(invoice.Id);
-            var model = InvoiceDocumentDataSource.GetInvoiceDetails(invoice);
+            User user = _userService.GetUserAsync(userId).Result;
+
+            var model = InvoiceDocumentDataSource.GetInvoiceDetails(invoice, user);
             var document = new InvoiceDocument(model);
             string invoicePath = _pdfPath + $"{invoice.Invoice_Id}_{invoice.Issuer_Name.Replace(' ', '_')}.pdf";
             document.GeneratePdf(invoicePath);

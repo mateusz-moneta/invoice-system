@@ -5,7 +5,7 @@ namespace InvoiceSystemAPI.PdfGenerator
 {
     public static class InvoiceDocumentDataSource
     {
-        public static InvoiceModel GetInvoiceDetails(Invoice invoice)
+        public static InvoiceModel GetInvoiceDetails(Invoice invoice, User user)
         {
 
             return new InvoiceModel
@@ -33,7 +33,8 @@ namespace InvoiceSystemAPI.PdfGenerator
 
                 Products = invoice.Products.ToList(),
                 Comments = invoice.Note,
-                IsPaid = invoice.Is_Paid
+                IsPaid = invoice.Is_Paid,
+                ImagePath = user.ImagePath
             };
         }
     }

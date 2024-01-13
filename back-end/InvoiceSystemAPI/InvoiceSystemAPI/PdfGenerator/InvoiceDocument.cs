@@ -5,6 +5,7 @@ using QuestPDF.Infrastructure;
 using QuestPDF.Drawing;
 using System.Security.Cryptography;
 using InvoiceSystemAPI.PdfGenerator.Components;
+using Microsoft.IdentityModel.Tokens;
 
 namespace InvoiceSystemAPI.PdfGenerator
 {
@@ -61,8 +62,10 @@ namespace InvoiceSystemAPI.PdfGenerator
                         text.Span($"{Model.DueDate:d}");
                     });
                 });
-
-                row.ConstantItem(100).Height(50).Placeholder();
+                if (!Model.ImagePath.IsNullOrEmpty())
+                {
+                    row.ConstantItem(100).Image(Model.ImagePath).FitArea();
+                }
             });
         }
 

@@ -9,21 +9,35 @@ using System.Net.Http.Headers;
 
 namespace InvoiceSystemAPI.Controllers
 {
+    /// <summary>
+    /// Controller responsible for managing invoice operations.
+    /// </summary>
     [ApiController]
     [Route("/api/invoices")]
     [Authorize]
 
     public class InvoicesController : Controller
     {
+
         private readonly IInvoiceService _invoiceService;
         private readonly List<Invoice> _invoices = new List<Invoice>();
         private readonly string _pdfPath = "./MediaFiles/Invoices/";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvoicesController"/> class.
+        /// </summary>
+        /// <param name="invoiceService">The invoice service.</param>
         public InvoicesController(IInvoiceService invoiceService)
         {
             _invoiceService = invoiceService;
         }
-
+        /// <summary>
+        /// Get all Invoices.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint retrieves all invoices.
+        /// </remarks>
+        /// <returns>A list of all invoices.</returns>
         [HttpGet]
         public IActionResult GetAllInvoices()
         {
@@ -45,7 +59,11 @@ namespace InvoiceSystemAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Retrieves a PDF format invoice by its unique identifier.
+        /// </summary>
+        /// <param name="invoiceId">The unique identifier of the invoice.</param>
+        /// <returns>The requested invoice in PDF format.</returns>
         [HttpGet("pdf/{invoiceId}")]
         public IActionResult GetInvoicePdf(int invoiceId) 
         {
@@ -77,7 +95,11 @@ namespace InvoiceSystemAPI.Controllers
 
             return File(bytes, "application/pdf", fileName);
         }
-
+        /// <summary>
+        /// Retrieves an invoice by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the invoice.</param>
+        /// <returns>The requested invoice.</returns>
         [HttpGet("{id}")]
         public IActionResult GetInvoiceById(int id)
         {
@@ -99,7 +121,11 @@ namespace InvoiceSystemAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Creates a new invoice.
+        /// </summary>
+        /// <param name="invoice">The details of the invoice to be created.</param>
+        /// <returns>The created invoice.</returns>
         [HttpPost]
         public ActionResult<Invoice> CreateInvoice(Invoice invoice)
         {
@@ -113,7 +139,12 @@ namespace InvoiceSystemAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Updates an existing invoice.
+        /// </summary>
+        /// <param name="id">The unique identifier of the invoice to be updated.</param>
+        /// <param name="updatedInvoice">The updated details of the invoice.</param>
+        /// <returns>The updated invoice.</returns>
         [HttpPut("{id}")]
         public ActionResult UpdateInvoice(int id, Invoice updatedInvoice)
         {
@@ -143,7 +174,11 @@ namespace InvoiceSystemAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Deletes an invoice by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the invoice to be deleted.</param>
+        /// <returns>No content if successful, NotFound if the invoice is not found.</returns>
         [HttpDelete("{id}")]
         public ActionResult DeleteInvoice(int id)
         {

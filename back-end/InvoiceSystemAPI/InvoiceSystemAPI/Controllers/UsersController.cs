@@ -15,7 +15,11 @@ namespace InvoiceSystemAPI.Controllers
         { 
             _userService = userService;
         }
-
+        /// <summary>
+        /// Creates a new user.
+        /// </summary>
+        /// <param name="createUserRequest">The details of the user to be created.</param>
+        /// <returns>An asynchronous task that represents the operation, with the created user.</returns>
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest createUserRequest)
         {

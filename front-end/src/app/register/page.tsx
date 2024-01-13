@@ -53,10 +53,9 @@ export default function Page() {
   };
 
   const handleSubmit = () => {
-    fetch('https://localhost:7110/api/users', {
+    fetch('https://localhost:7110/api/users/register', {
       method: 'POST',
       headers: {
-        accept: 'text/plain',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

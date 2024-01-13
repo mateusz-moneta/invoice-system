@@ -1,7 +1,11 @@
 ﻿using InvoiceSystemAPI.Models;
+using InvoiceSystemAPI.PdfGenerator;
 using InvoiceSystemAPI.Services.Abstracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using QuestPDF.Fluent;
+using System.Net.Http.Headers;
 
 namespace InvoiceSystemAPI.Controllers
 {
@@ -13,6 +17,7 @@ namespace InvoiceSystemAPI.Controllers
     {
         private readonly IInvoiceService _invoiceService;
         private readonly List<Invoice> _invoices = new List<Invoice>();
+        private readonly string _pdfPath = "./MediaFiles/Invoices/";
 
         public InvoicesController(IInvoiceService invoiceService)
         {
@@ -41,10 +46,41 @@ namespace InvoiceSystemAPI.Controllers
             }
         }
 
+        [HttpGet("pdf/{invoiceId}")]
+        public IActionResult GetInvoicePdf(int invoiceId) 
+        {
+            var invoice = _invoiceService.GetInvoiceByIdAsync(invoiceId).Result;
+            string filePath = GeneratePDF(invoice);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            var bytes = System.IO.File.ReadAllBytes(filePath);
+            var fileName = Path.GetFileName(filePath);
+            var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = fileName
+            };
+
+            Response.Headers[HeaderNames.ContentDisposition] = contentDisposition.ToString();
+
+            try
+            {
+                System.IO.File.Delete(filePath);
+            }
+            catch (IOException ex)
+            {
+                throw new Exception($"Error occurred while deleting the file: {ex.Message}");
+            }
+
+            return File(bytes, "application/pdf", fileName);
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetInvoiceById(int id)
         {
-
             try
             {
                 var invoice = _invoiceService.GetInvoiceByIdAsync(id).Result;
@@ -127,6 +163,16 @@ namespace InvoiceSystemAPI.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        private string GeneratePDF(Invoice invoice)
+        {
+            //invoice.Products = _productsService.GetProductsByInvoiceIdAsync(invoice.Id);
+            var model = InvoiceDocumentDataSource.GetInvoiceDetails(invoice);
+            var document = new InvoiceDocument(model);
+            string invoicePath = _pdfPath + $"{invoice.Invoice_Id}_{invoice.Issuer_Name.Replace(' ', '_')}.pdf";
+            document.GeneratePdf(invoicePath);
+            return invoicePath;
         }
 
     }

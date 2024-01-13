@@ -23,6 +23,7 @@
         public string? ZipCode { get; set; }
         public string? Country { get; set; }
         public string ImagePath { get; set; }
+        public Template Template { get; set; }
         public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

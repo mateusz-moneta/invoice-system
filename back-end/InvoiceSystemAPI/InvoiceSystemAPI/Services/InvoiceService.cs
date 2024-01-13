@@ -14,11 +14,14 @@ namespace InvoiceSystemAPI.Services
         {
             _applicationDbContext = applicationDbContext;
         }
-        public async Task CreateInvoiceAsync(Invoice invoice)
+
+
+        public async Task CreateInvoiceAsync(Invoice invoice, int userId)
         {
             try
             {  
-                _applicationDbContext.Invoices.Add(invoice);
+                var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                user.Invoices.Add(invoice);
                 await _applicationDbContext.SaveChangesAsync();
             }
             catch (Exception ex) 
@@ -27,9 +30,11 @@ namespace InvoiceSystemAPI.Services
             }
         }
 
-        public async Task<List<Invoice>> GetAllInvoicesAsync()
+        public async Task<List<Invoice>> GetAllInvoicesAsync(int userId)
         {
-            return await _applicationDbContext.Invoices.Include(i => i.Products).ToListAsync();
+            var user = await _applicationDbContext.Users.Include(i => i.Invoices)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            return user.Invoices.ToList();
         }
 
         public async Task<Invoice> GetInvoiceByIdAsync(int id)

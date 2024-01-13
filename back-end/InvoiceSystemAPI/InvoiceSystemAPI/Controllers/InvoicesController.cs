@@ -15,12 +15,10 @@ namespace InvoiceSystemAPI.Controllers
     [ApiController]
     [Route("/api/invoices")]
     [Authorize]
-
     public class InvoicesController : Controller
     {
 
         private readonly IInvoiceService _invoiceService;
-        private readonly List<Invoice> _invoices = new List<Invoice>();
         private readonly string _pdfPath = "./MediaFiles/Invoices/";
 
         /// <summary>
@@ -40,10 +38,13 @@ namespace InvoiceSystemAPI.Controllers
         /// <returns>A list of all invoices.</returns>
         [HttpGet]
         public IActionResult GetAllInvoices()
+
+        [HttpGet("all/{userId}")]
+        public async Task<IActionResult> GetAllInvoices(int userId)
         {
             try
             {
-                var invoices = _invoiceService.GetAllInvoicesAsync().Result;
+                var invoices = _invoiceService.GetAllInvoicesAsync(userId).Result;
 
                 if(invoices != null)
                 {
@@ -128,10 +129,14 @@ namespace InvoiceSystemAPI.Controllers
         /// <returns>The created invoice.</returns>
         [HttpPost]
         public ActionResult<Invoice> CreateInvoice(Invoice invoice)
+
+        [HttpPost("{userId}")]
+
+        public async Task<ActionResult<Invoice>> CreateInvoice(Invoice invoice, int userId)
         {
             try
             {
-                _invoiceService.CreateInvoiceAsync(invoice);
+                await _invoiceService.CreateInvoiceAsync(invoice, userId);
                 return CreatedAtAction(nameof(GetInvoiceById), new { id = invoice.Id }, invoice);
             }
             catch (Exception ex) 

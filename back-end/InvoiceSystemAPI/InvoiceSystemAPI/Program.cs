@@ -61,7 +61,8 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")),
+             ServiceLifetime.Scoped);
 
 var allowedOrigin = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 

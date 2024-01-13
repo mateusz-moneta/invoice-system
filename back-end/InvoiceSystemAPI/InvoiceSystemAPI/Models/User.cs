@@ -22,6 +22,8 @@
         public string? CompanyName { get; set; }
         public string? ZipCode { get; set; }
         public string? Country { get; set; }
+        public string ImagePath { get; set; }
+
         public ICollection<Invoice> Invoices { get; set; }
     }
 }

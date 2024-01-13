@@ -95,5 +95,55 @@ namespace InvoiceSystemAPI.Services
             return await _applicationDbContext.Users
                 .FirstOrDefaultAsync(x => x.UserName == userName);
         }
+        
+        public async Task AddUserImageAsync(int userId, IFormFile imageFile)
+        {
+            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            var userDirectory = Path.Combine("media/images", user.Id.ToString());
+            if (!Directory.Exists(userDirectory))
+            {
+                Directory.CreateDirectory(userDirectory);
+            }
+
+            var fileName = Path.GetFileName(imageFile.FileName);
+            var uploadPath = Path.Combine(userDirectory, fileName);
+
+            using (var fileStream = new FileStream(uploadPath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            user.ImagePath = Path.Combine("media/images", user.Id.ToString(), fileName);
+
+            _applicationDbContext.Users.Update(user);
+            await _applicationDbContext.SaveChangesAsync();
+        }
+        
+        public async Task DeleteUserImageAsync(int userId)
+        {
+            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            if (!string.IsNullOrEmpty(user.ImagePath) && File.Exists(user.ImagePath))
+            {
+                File.Delete(user.ImagePath);
+                user.ImagePath = null;
+                _applicationDbContext.Users.Update(user);
+                await _applicationDbContext.SaveChangesAsync();
+            }
+        }
+        
     }
+    
+    
 }

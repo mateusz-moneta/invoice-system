@@ -11,5 +11,6 @@ namespace InvoiceSystemAPI.Services.Abstracts
         Task<List<User>> GetUsersAsync();
         Task<User> GetUserAsync(int id);
         Task<User> GetUserAsync(string login);
+        Task RegisterUserAsync(RegisterUserRequest user);
     }
 }

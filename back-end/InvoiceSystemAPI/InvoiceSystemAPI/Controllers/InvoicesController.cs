@@ -36,9 +36,6 @@ namespace InvoiceSystemAPI.Controllers
         /// This endpoint retrieves all invoices.
         /// </remarks>
         /// <returns>A list of all invoices.</returns>
-        [HttpGet]
-        public IActionResult GetAllInvoices()
-
         [HttpGet("all/{userId}")]
         public async Task<IActionResult> GetAllInvoices(int userId)
         {
@@ -127,9 +124,6 @@ namespace InvoiceSystemAPI.Controllers
         /// </summary>
         /// <param name="invoice">The details of the invoice to be created.</param>
         /// <returns>The created invoice.</returns>
-        [HttpPost]
-        public ActionResult<Invoice> CreateInvoice(Invoice invoice)
-
         [HttpPost("{userId}")]
 
         public async Task<ActionResult<Invoice>> CreateInvoice(Invoice invoice, int userId)

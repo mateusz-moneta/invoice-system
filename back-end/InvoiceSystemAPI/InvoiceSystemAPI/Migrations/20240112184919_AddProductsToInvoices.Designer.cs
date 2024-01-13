@@ -3,6 +3,7 @@ using System;
 using InvoiceSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InvoiceSystemAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240112184919_AddProductsToInvoices")]
+    partial class AddProductsToInvoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace InvoiceSystemAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BuyerVATCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Buyer_Address")
                         .IsRequired()
                         .HasColumnType("text");
@@ -41,6 +40,9 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<string>("Buyer_City")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Buyer_Id")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Buyer_Name")
                         .IsRequired()
@@ -60,10 +62,6 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<bool>("Is_Paid")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("IssuerVATCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Issuer_Address")
                         .IsRequired()
                         .HasColumnType("text");
@@ -71,6 +69,9 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<string>("Issuer_City")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Issuer_Id")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Issuer_Name")
                         .IsRequired()
@@ -128,7 +129,7 @@ namespace InvoiceSystemAPI.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("InvoiceSystemAPI.Models.User", b =>

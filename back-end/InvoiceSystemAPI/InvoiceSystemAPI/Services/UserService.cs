@@ -73,6 +73,43 @@ namespace InvoiceSystemAPI.Services
                 }
             }
         }
+
+        public async Task RegisterUserAsync(RegisterUserRequest registerUserRequest)
+        {
+            using (IDbContextTransaction transaction = _applicationDbContext.Database.BeginTransaction())
+            {
+                if (await ExistsUserAsync(registerUserRequest.UserName))
+                {
+                    throw new Exception("Użytkownik o podanej nazwie już istnieje");
+                }
+
+                try
+                {
+                    byte[] salt = _passwordHasher.RandomSalt(_authenticationConfiguration.SaltSize);
+                    string hash = _passwordHasher.Hash(registerUserRequest.Password, salt);
+
+                    User user = new User
+                    {
+                        Email = registerUserRequest.Email,
+                        UserName = registerUserRequest.UserName,
+                        Name = registerUserRequest.UserName,
+                        Surname = registerUserRequest.Surname,
+                        Password = hash,
+                        Salt = salt,
+                    };
+
+                    _applicationDbContext.Users.Add(user);
+                    await _applicationDbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception("Błąd podczas rejestracji użytkownika");
+                }
+            }
+        }
+
         public async Task<bool> ExistsUserAsync(string userName)
         {
             User user = await GetUserAsync(userName);

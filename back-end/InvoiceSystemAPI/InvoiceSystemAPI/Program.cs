@@ -9,6 +9,11 @@ using InvoiceSystemAPI.Tools.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Reflection;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +28,7 @@ builder.Services.AddSingleton(authenticationConfiguration);
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 // Data Generators
 builder.Services.AddScoped<UserDataGenerator>();
@@ -48,9 +54,28 @@ builder.Services.AddAuthentication(option =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 builder.Services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")),
+             ServiceLifetime.Scoped);
+
+var allowedOrigin = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("myAppCors", policy =>
+    {
+        policy.WithOrigins(allowedOrigin)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -66,6 +91,8 @@ app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("myAppCors");
 
 app.MapControllers();
 

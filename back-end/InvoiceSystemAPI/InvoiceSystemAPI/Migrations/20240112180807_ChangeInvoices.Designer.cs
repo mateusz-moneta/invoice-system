@@ -3,6 +3,7 @@ using System;
 using InvoiceSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InvoiceSystemAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240112180807_ChangeInvoices")]
+    partial class ChangeInvoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace InvoiceSystemAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BuyerVATCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Buyer_Address")
                         .IsRequired()
                         .HasColumnType("text");
@@ -41,6 +40,9 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<string>("Buyer_City")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Buyer_Id")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Buyer_Name")
                         .IsRequired()
@@ -60,10 +62,6 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<bool>("Is_Paid")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("IssuerVATCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Issuer_Address")
                         .IsRequired()
                         .HasColumnType("text");
@@ -71,6 +69,9 @@ namespace InvoiceSystemAPI.Migrations
                     b.Property<string>("Issuer_City")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Issuer_Id")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Issuer_Name")
                         .IsRequired()
@@ -101,34 +102,6 @@ namespace InvoiceSystemAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Invoices");
-                });
-
-            modelBuilder.Entity("InvoiceSystemAPI.Models.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("InvoiceSystemAPI.Models.User", b =>
@@ -197,18 +170,6 @@ namespace InvoiceSystemAPI.Migrations
                     b.HasOne("InvoiceSystemAPI.Models.User", null)
                         .WithMany("Invoices")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("InvoiceSystemAPI.Models.Product", b =>
-                {
-                    b.HasOne("InvoiceSystemAPI.Models.Invoice", null)
-                        .WithMany("Products")
-                        .HasForeignKey("InvoiceId");
-                });
-
-            modelBuilder.Entity("InvoiceSystemAPI.Models.Invoice", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("InvoiceSystemAPI.Models.User", b =>

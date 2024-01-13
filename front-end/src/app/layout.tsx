@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
+import { Nunito } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+import { AuthProvider } from './user-provider';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import './globals.scss';
+
+const nunito = Nunito({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Invoice System'
@@ -11,7 +15,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <AuthProvider>
+        <body className={nunito.className}>{children}</body>
+      </AuthProvider>
     </html>
   );
 }

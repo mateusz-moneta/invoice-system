@@ -3,7 +3,4 @@ const PERSON = 'Person';
 
 export type CustomerTypeEnum = typeof COMPANY | typeof PERSON;
 
-export {
-    COMPANY,
-    PERSON
-}
+export { COMPANY, PERSON };

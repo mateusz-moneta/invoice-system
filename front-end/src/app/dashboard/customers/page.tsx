@@ -1,10 +1,10 @@
-import DashboardComponent from "../../components/dashboard/Dashboard";
-import CustomersList from "../../components/dashboard/customers/CustomersList";
+import DashboardComponent from '../../components/dashboard/Dashboard';
+import CustomersList from '../../components/dashboard/customers/CustomersList';
 
 export default function DashboardCustomers() {
-    return (
-        <DashboardComponent>
-            <CustomersList />
-        </DashboardComponent>
-    )
+  return (
+    <DashboardComponent>
+      <CustomersList />
+    </DashboardComponent>
+  );
 }

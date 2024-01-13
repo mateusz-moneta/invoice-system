@@ -1,7 +1,5 @@
-import Form from "../Form";
+import Form from '../Form';
 
 export default function InvoiceForm() {
-    return (
-        <Form title={'Add Invoice'} />
-    );
+  return <Form title={'Add Invoice'} />;
 }

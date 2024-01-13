@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
-import { useAuthContext } from './user-provider';
+import { useAuthContext } from './auth-provider';
 
 export default function isAuth(Component: any) {
   return (props: any) => {

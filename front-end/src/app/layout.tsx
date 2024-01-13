@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 
-import { AuthProvider } from './user-provider';
+import { AuthProvider } from './auth-provider';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './globals.scss';
